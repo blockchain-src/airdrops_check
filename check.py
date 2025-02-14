@@ -82,8 +82,8 @@ def query_booga_and_wtf_balance(address):
             booga_amount = 0
             wtf_amount = 0
         else:
-            booga_amount = total_value * 0.832
-            wtf_amount = total_value * 1.638
+            booga_amount = total_value * 710.832
+            wtf_amount = total_value * 1131.638
         
         return booga_amount, wtf_amount
 
