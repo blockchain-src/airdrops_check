@@ -52,7 +52,7 @@ def batch_query_addresses(addresses):
     # 返回结果表格数据
     return results
 
-# 获取 BOOGA 和 WTF 代币数量
+# 查询 BOOGA 和 WTF 代币数量
 def query_booga_and_wtf_balance(address):
     url = f"https://openapiv1.coinstats.app/wallet/balances?address={address}&networks=all"
     headers = {
@@ -129,10 +129,10 @@ for row in results:
     row[2] = booga_amount  # 更新 BOOGA 代币数量
     row[3] = wtf_amount    # 更新 WTF 代币数量
 
-# 设置表头，包含 BOOGA 和 WTF 代币
+# 设置表头
 blue_title = f"\033[36m{'钱包地址'}\033[0m", f"\033[36m{'BEBE'}\033[0m", f"\033[36m{'BOOGA'}\033[0m", f"\033[36m{'WTF'}\033[0m"
 
-# 使用 tabulate 格式化表格输出，确保 BEBE 和 BOOGA 列左对齐
+# 使用 tabulate 格式化表格输出
 print(f"{BOLD}{YELLOW}🌟 空投查询结果{RESET}")
 print(tabulate(results, headers=blue_title, tablefmt="fancy_grid", stralign="center", numalign="right", colalign=("center", "left", "left", "left"), floatfmt=".2f"))
 
