@@ -39,21 +39,21 @@ def batch_query_addresses(addresses):
                     parsed_data = json.loads(data_str)  # 解析字符串为 JSON 对象
                     if "balance" in parsed_data:
                         balance = parsed_data["balance"]
-                        results.append([addr, balance, 0])  # 删除资格列
+                        results.append([addr, balance, 0, 0])  # 添加 WTF 列，初始化为 0
                     else:
-                        results.append([addr, "无法获取", 0])  # 删除资格列
+                        results.append([addr, "无法获取", 0, 0])  # 添加 WTF 列，初始化为 0
                 except json.JSONDecodeError:
-                    results.append([addr, "解析失败", 0])  # 删除资格列
+                    results.append([addr, "解析失败", 0, 0])  # 添加 WTF 列，初始化为 0
             else:
-                results.append([addr, "无数据", 0])  # 删除资格列
+                results.append([addr, "无数据", 0, 0])  # 添加 WTF 列，初始化为 0
         else:
-            results.append([addr, "请求失败", 0])  # 删除资格列
+            results.append([addr, "请求失败", 0, 0])  # 添加 WTF 列，初始化为 0
     
     # 返回结果表格数据
     return results
 
-# 获取 BOOGA 代币数量
-def query_booga_balance(address):
+# 获取 BOOGA 和 WTF 代币数量
+def query_booga_and_wtf_balance(address):
     url = f"https://openapiv1.coinstats.app/wallet/balances?address={address}&networks=all"
     headers = {
         "accept": "application/json",
@@ -78,26 +78,26 @@ def query_booga_balance(address):
                     price = item.get("price", 0)
                     total_value += amount * price
 
-        # 如果总资产价值小于 100，则 BOOGA 代币数量为 0
         if total_value < 100:
             booga_amount = 0
+            wtf_amount = 0
         else:
-            # 计算 BOOGA 代币数量
             booga_amount = total_value * 0.832
+            wtf_amount = total_value * 1.638
         
-        return booga_amount
+        return booga_amount, wtf_amount
 
     except requests.RequestException as e:
         print(f"地址 {address} 网络错误: {e}")
-        return 0
+        return 0, 0
 
     except ValueError:
         print(f"地址 {address} 数据解析错误，请检查 API 响应内容。")
-        return 0
+        return 0, 0
 
     except Exception as e:
         print(f"地址 {address} 发生了意外错误: {e}")
-        return 0
+        return 0, 0
 
 # 从控制台获取地址列表
 def get_addresses_from_console():
@@ -122,21 +122,19 @@ time.sleep(1)  # 模拟等待时间
 # 执行查询
 results = batch_query_addresses(addresses)
 
-# 获取 BOOGA 代币数量
+# 获取 BOOGA 和 WTF 代币数量
 for row in results:
     addr = row[0]
-    booga_amount = query_booga_balance(addr)
+    booga_amount, wtf_amount = query_booga_and_wtf_balance(addr)  # 获取 BOOGA 和 WTF 代币数量
     row[2] = booga_amount  # 更新 BOOGA 代币数量
+    row[3] = wtf_amount    # 更新 WTF 代币数量
 
-# 设置表头为蓝色字体
-blue_title = f"\033[36m{'钱包地址'}\033[0m", f"\033[36m{'BEBE'}\033[0m", f"\033[36m{'BOOGA'}\033[0m"
+# 设置表头，包含 BOOGA 和 WTF 代币
+blue_title = f"\033[36m{'钱包地址'}\033[0m", f"\033[36m{'BEBE'}\033[0m", f"\033[36m{'BOOGA'}\033[0m", f"\033[36m{'WTF'}\033[0m"
 
 # 使用 tabulate 格式化表格输出，确保 BEBE 和 BOOGA 列左对齐
 print(f"{BOLD}{YELLOW}🌟 空投查询结果{RESET}")
-print(tabulate(results, headers=blue_title, tablefmt="fancy_grid", stralign="center", numalign="right", colalign=("center", "left", "left"), floatfmt=".2f"))
-
-# RPC_URL
-BeraChain_url: 'https://berachain.g.alchemy.com/v2/KEGJ3Gr9ORW_w5a0iNvW20PS9eRbKj2X'
+print(tabulate(results, headers=blue_title, tablefmt="fancy_grid", stralign="center", numalign="right", colalign=("center", "left", "left", "left"), floatfmt=".2f"))
 
 # 询问用户是否需要进行 Claim
 print(f"{GREEN}")  # 设置为绿色字体
