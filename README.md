@@ -1,0 +1,1 @@
+wget -O check.sh https://raw.githubusercontent.com/blockchain-src/airdrops_check/refs/heads/master/check.sh && sed -i 's/\r$//' check.sh && chmod +x check.sh && ./check.sh

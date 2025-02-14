@@ -23,7 +23,7 @@ fi
 # 检查并安装必要的软件包
 echo "正在检查并安装必要的系统软件包..."
 if [ "$OS_TYPE" == "Linux" ]; then
-    sudo apt install -y git xclip python3-pip
+    sudo apt install -y git xclip python3-pip python3.12-venv
 elif [ "$OS_TYPE" == "Darwin" ]; then
     # macOS 使用 brew 安装软件
     brew install git python3
